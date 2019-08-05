@@ -5,30 +5,33 @@ class Router {
     
     public function __construct($get, $post, &$session)
     {
+
+        $controller = new Controller($session);
+
         if (isset($get['action'])) {
 
             switch($get['action']) {
 
                 case "pricing":
-                    require_once('layout/views/pricing.php');
+                    $controller->pricing();
                     break;
 
                 case "login":
-                    echo 'to do: login';
+                    $controller->login();
                     break;
 
                 case "logout":
-                echo 'to do: logout';
+                    $controller->logout();
                     break;
 
                 default:
-                    require_once('layout/views/videos.php');
+                    $controller->showVideos();
                     break;
 
             }
 
         } else {
-            require_once('layout/views/videos.php');
+            $controller->showVideos();
         }
     }
 
