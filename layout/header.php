@@ -14,7 +14,12 @@
 
 <body>
     <div class="mt-5 container">
-        <span class="float-right">&nbsp;You are not logged in <a href="?action=login">login</a> </span>
+
+        <?php if(isset($session['logged_in'])): ?>
+        <span class="float-right">&nbsp;Logged in as <?=$session['name']?> <a href="?action=logout">logout</a></span>
+        <?php else: ?>
+        <span class="float-right">&nbsp;You are not logged in <a href="?action=login">login</a></span>
+        <?php endif; ?>
         <span class="float-right"><a href="?action=default">watch videos</a></span>
         <h1><span class="text-info">VIDEO</span> <span class="text-danger">SERVICE</span></h1>
         <p class="text-success">The best video resource ever</p>

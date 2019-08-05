@@ -8,6 +8,7 @@ class Controller {
 
     public function __construct(&$session) {
 
+        print_r($session);
         $this->session = &$session;
 
     }
@@ -24,13 +25,15 @@ class Controller {
 
     public function login()
     {
-        // to do login
+        $login = new FakeLogin($this->session);
+        $login->login();
         return header("Location: " . self::BASE_URL);
     }
 
     public function logout()
     {
-        // to do logout
+        $logout = new FakeLogin($this->session);
+        $logout->logout();
         return header("Location: " . self::BASE_URL);
     }
 
