@@ -20,6 +20,11 @@ class Controller {
 
     public function showVideos()
     {
+        if ($this->canWatchVideos) {
+            $canWatchVideos = true;
+        } else {
+            $canWatchVideos = false;
+        }
         require_once('layout/views/videos.php');
     }
 
@@ -36,5 +41,29 @@ class Controller {
         $logout->logout();
         return header("Location: " . self::BASE_URL);
     }
+
+    private function canWatchVideos() 
+    {
+        if($this->isLoggedIn() && $this->isSubscriptionActive()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isLoggedIn() 
+    {
+        if (isset($this->session['logged_in']) && $this->session['logged_in']==true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function isSubscriptionActive() 
+    {
+            return true;
+    }
+    
 
 }
