@@ -14,7 +14,7 @@
 
 <body>
     <div class="mt-5 container">
-        <span class="float-right">&nbsp;You are not logged in <a href="videos-logged-in.html">login</a> </span>
+        <span class="float-right">&nbsp;You are not logged in <a href="?action=login">login</a> </span>
         <span class="float-right"><a href="?action=default">watch videos</a></span>
         <h1><span class="text-info">VIDEO</span> <span class="text-danger">SERVICE</span></h1>
         <p class="text-success">The best video resource ever</p>
