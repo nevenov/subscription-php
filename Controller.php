@@ -180,6 +180,12 @@ class Controller {
         print_r($planList->toArray());
         echo "<pre>";
     }
+
+    public function deletePlan_Paypal($planId='P-09268317AX325443JM3IVR6A')
+    {
+        $plan = PayPal\Api\Plan::get($planId, $this->apiContext);
+        $plan->delete($this->apiContext);
+    }
     
 
 }

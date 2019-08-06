@@ -31,6 +31,10 @@ class Router {
                 case "admin/show-plans":
                     $controller->showPlans();
                     break; 
+                
+                case "admin/delete-plan":
+                    $controller->deletePlan();
+                    break; 
 
                 default:
                     $controller->showVideos();
