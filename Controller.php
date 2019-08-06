@@ -4,12 +4,33 @@ class Controller {
 
     private $session;
 
+    private $apiContext;
+
     const BASE_URL = 'http://localhost/lessons/paypal/subscription/';
 
     public function __construct(&$session) 
     {
         $this->session = &$session;
     }
+
+    public function __call($funcName, $args)
+    {
+        // This will include all the files and classes to your autoloader
+        require __DIR__ . '/vendor/autoload.php';
+
+        $this->apiContext = new \PayPal\Rest\ApiContext(
+            new \PayPal\Auth\OAuthTokenCredential(
+                'AUA0vvs7vganK5I5g3EAJAgtpxxlt4WzlOK9MuMHDavYnWux5XkocZ2FaOfbzNBODM5kDf2LbeknZ5It',     // ClientID
+                'EM-6C_MAmtbve4UrBMNib7tRfQEl-0spuGYubHhSUQK9fLWqa6R6p1Y1ongtE7VnXj29Mu8gFLfVARD3'      // ClientSecret
+            )
+        );
+
+        $methodName = $funcName . '_Paypal';
+
+        $this->$methodName();
+    }
+
+
 
     public function pricing()
     {
@@ -65,18 +86,9 @@ class Controller {
     }
 
 
-    public function createPlan()
+    public function createPlan_Paypal()
     {
-        // This will include all the files and classes to your autoloader
-        require __DIR__ . '/vendor/autoload.php';
-
-        $apiContext = new \PayPal\Rest\ApiContext(
-            new \PayPal\Auth\OAuthTokenCredential(
-                'AUA0vvs7vganK5I5g3EAJAgtpxxlt4WzlOK9MuMHDavYnWux5XkocZ2FaOfbzNBODM5kDf2LbeknZ5It',     // ClientID
-                'EM-6C_MAmtbve4UrBMNib7tRfQEl-0spuGYubHhSUQK9fLWqa6R6p1Y1ongtE7VnXj29Mu8gFLfVARD3'      // ClientSecret
-            )
-        );
-
+        
         $plan = new \PayPal\Api\Plan();
 
         $plan->setName('Pro Plan')
@@ -89,6 +101,7 @@ class Controller {
             ->setFrequency('Month') // or WEEK, DAY, YEAR, MONTH
             ->setFrequencyInterval("1") // The interval at which the customer will be charged. Value can not be greater than 12 months
             ->setAmount(new \PayPal\Api\Currency(array('value' => 15, 'currency' => 'USD')));
+            // ->setCycles("12") - we use this if setType('FIXED')
 
 
         $merchantPreferences = new \PayPal\Api\MerchantPreferences();           
@@ -117,16 +130,43 @@ class Controller {
         $plan->setMerchantPreferences($merchantPreferences);
 
         try {
-            $createdPlan = $plan->create($apiContext);
+            $createdPlan = $plan->create($this->apiContext);
         } catch (Exception $ex) {
             print_r($ex->getMessage());
             die();
         }
 
-        echo "<pre>";
-        print_r($createdPlan);
-        echo "</pre>";
+        // echo "<pre>";
+        // print_r($createdPlan);
+        // echo "</pre>";
 
+        $this->activatePlan($createdPlan);
+
+    }
+
+    
+    private function activatePlan($createdPlan)
+    {
+        try {
+
+            $patch = new PayPal\Api\Patch();
+            $value = new PayPal\Common\PayPalModel('{
+                "state":"ACTIVE"
+            }');
+
+            $patch->setOp('replace')
+                ->setPath('/')
+                ->setValue($value);
+
+            $patchRequest = new PayPal\Api\PatchRequest();
+            $patchRequest->addPatch($patch);
+
+            $createdPlan->update($patchRequest, $this->apiContext);
+
+        } catch (Exception $ex) {
+            print_r($ex->getMessage());
+            die();
+        }
     }
     
 
