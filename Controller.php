@@ -6,11 +6,9 @@ class Controller {
 
     const BASE_URL = 'http://localhost/lessons/paypal/subscription/';
 
-    public function __construct(&$session) {
-
-        print_r($session);
+    public function __construct(&$session) 
+    {
         $this->session = &$session;
-
     }
 
     public function pricing()
@@ -20,7 +18,7 @@ class Controller {
 
     public function showVideos()
     {
-        if ($this->canWatchVideos) {
+        if ($this->canWatchVideos()) {
             $canWatchVideos = true;
         } else {
             $canWatchVideos = false;
@@ -62,7 +60,8 @@ class Controller {
 
     private function isSubscriptionActive() 
     {
-            return true;
+        $array = unserialize(file_get_contents('database/db.txt'));
+        return $array['subscription'];
     }
     
 
