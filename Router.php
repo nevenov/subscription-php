@@ -24,6 +24,10 @@ class Router {
                     $controller->logout();
                     break;
 
+                case "admin/create-plan":
+                    $controller->createPlan();
+                    break;    
+
                 default:
                     $controller->showVideos();
                     break;
