@@ -168,6 +168,18 @@ class Controller {
             die();
         }
     }
+
+
+    public function showPlans_Paypal()
+    {
+        // status could be CREATED, ACTIVE, INACTIVE or ALL
+        $params = array('page_size' => '20', 'status'=>'ALL');
+        $planList = PayPal\Api\Plan::all($params, $this->apiContext);
+
+        echo "<pre>";
+        print_r($planList->toArray());
+        echo "<pre>";
+    }
     
 
 }

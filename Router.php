@@ -28,6 +28,10 @@ class Router {
                     $controller->createPlan();
                     break;    
 
+                case "admin/show-plans":
+                    $controller->showPlans();
+                    break; 
+
                 default:
                     $controller->showVideos();
                     break;
