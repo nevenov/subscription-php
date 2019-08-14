@@ -36,6 +36,10 @@ class Router {
                     $controller->deletePlan();
                     break; 
 
+                case "subscribe":
+                    $controller->subscribe();
+                    break;
+
                 default:
                     $controller->showVideos();
                     break;

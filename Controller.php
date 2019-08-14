@@ -181,10 +181,42 @@ class Controller {
         echo "<pre>";
     }
 
-    public function deletePlan_Paypal($planId='P-09268317AX325443JM3IVR6A')
+    // delete Paypal plan with an argument of the plan ID:
+    public function deletePlan_Paypal($planId='P-5SD21591397201814RMZDHXY')
     {
         $plan = PayPal\Api\Plan::get($planId, $this->apiContext);
         $plan->delete($this->apiContext);
+    }
+
+
+    // subscribe to one of the plans
+    public function subscribe_Paypal()
+    {
+        $agreement = new PayPal\Api\Agreement();
+        $agreement->setName('Some subscription name')
+            ->setDescription('Initial payment of $15 followed by a recurring payment of $15 on the '.date('jS').' of every mon') // we can start date to 1 month from now if we take the first payment via the setup fee
+            ->setStartDate(gmdate("Y-m-d\TH:i:s\Z", strtotime("+1 month", time())));
+
+        $plan = new PayPal\Api\Plan();
+        $plan->setId('P-61D888833N314604JR5WQ47Q');
+
+        $agreement->setPlan($plan);
+
+        $payer = new PayPal\Api\Payer();
+        $payer->setPaymentMethod('paypal');
+        $agreement->setPayer($payer);
+
+        try {
+
+            $agreement = $agreement->create($this->apiContext);
+            $approvalUrl = $agreement->getApprovalLink();
+
+        } catch (Exception $ex) {
+            print_r($ex->getMessage());
+            die();
+        }
+
+        header("Location: {$approvalUrl}");
     }
     
 
