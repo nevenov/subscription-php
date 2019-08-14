@@ -218,6 +218,40 @@ class Controller {
 
         header("Location: {$approvalUrl}");
     }
+
+    // final step of agreement - if successful
+    public function agreement_Paypal()
+    {
+        if (!empty($_GET['success'])) {
+            $success = $_GET['success'];
+
+            if ($success && !empty($_GET['token'])) {
+                $token = $_GET['token'];
+
+                $agreement = new \PayPal\Api\Agreement();
+
+                try {
+                    $agreement->execute($token, $this->apiContext);
+                } catch (Exception $ex) {
+                    exit(1);
+                }
+
+                $this->updateStatus(true);
+
+            } else {
+                // payment failed, perhaps send the user elsewhere and log the error
+            }
+        }
+    }
+
+    private function updateStatus($value) 
+    {
+        $array = [
+            'subscription' => $value
+        ];
+
+        file_put_contents('database/db.txt', serialize($array));
+    }
     
 
 }

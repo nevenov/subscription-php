@@ -38,6 +38,10 @@ class Router {
 
                 case "subscribe":
                     $controller->subscribe();
+                    break; 
+
+                case "agreement":
+                    $controller->agreement();
                     break;
 
                 default:
